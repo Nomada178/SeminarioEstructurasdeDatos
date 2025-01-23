@@ -1,5 +1,5 @@
 #include <iostream>
-#include <cstring> // Para manejar cadenas de caracteres
+#include <cstring> 
 
 using namespace std;
 
@@ -15,10 +15,10 @@ public:
     // Constructor
     Empleado(int clave, const char* nombre, const char* domicilio, float sueldo, const char* reportaA) {
         ClaveEmpleado = clave;
-        strcpy(Nombre, nombre);
-        strcpy(Domicilio, domicilio);
+        for (int i = 0; i < 50; i++) Nombre[i] = nombre[i];
+        for (int i = 0; i < 100; i++) Domicilio[i] = domicilio[i];
         Sueldo = sueldo;
-        strcpy(ReportaA, reportaA);
+        for (int i = 0; i < 50; i++) ReportaA[i] = reportaA[i];
     }
 
     // Métodos
@@ -31,11 +31,11 @@ public:
     }
 
     void CambiaDomic(const char* nuevoDomicilio) {
-        strcpy(Domicilio, nuevoDomicilio);
+        for (int i = 0; i < 100; i++) Domicilio[i] = nuevoDomicilio[i];
     }
 
     void CambiaReportaA(const char* nuevoReportaA) {
-        strcpy(ReportaA, nuevoReportaA);
+        for (int i = 0; i < 50; i++) ReportaA[i] = nuevoReportaA[i];
     }
 
     void ActualSueldo(float porcentajeIncremento) {
@@ -49,8 +49,8 @@ public:
 
 int main() {
     // Creación de los empleados
-    Empleado JefePlanta(1, "Carlos Perez", "Calle Falsa 123", 50000, "Director General");
-    Empleado JefePersonal(2, "Ana Lopez", "Av. Siempre Viva 456", 40000, "Director General");
+    Empleado JefePlanta(8008, "Carlos Perez", "Rio nilo101", 50000, "Director General");
+    Empleado JefePersonal(4567, "Ana Lopez", "Av.Revolucion 456", 40000, "Director General");
 
     int opcion;
     do {
