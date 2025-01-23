@@ -14,3 +14,8 @@ Nombre: Ana Lopez
 Domicilio: Av. Siempre Viva 456
 Sueldo: 40000 
 Jefe directo: Director General
+
+
+Problema 2
+Materia programación: 08
+Bases de datos: 10
