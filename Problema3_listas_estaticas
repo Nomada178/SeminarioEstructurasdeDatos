@@ -1,0 +1,121 @@
+#include <iostream>
+using namespace std;
+
+class Empleado {
+public:
+    string nombre;
+    int id;
+    
+    Empleado() {}
+    Empleado(string n, int i) : nombre(n), id(i) {}
+};
+
+const int MAX = 500;
+
+class ListaEstatica {
+private:
+    Empleado datos[MAX];
+    int tam;
+public:
+    ListaEstatica() { tam = 0; }
+    
+    bool Vacia() { return tam == 0; }
+    bool Llena() { return tam == MAX; }
+    
+    void Agrega(Empleado e) {
+        if (Llena()) {
+            cout << "Lista llena\n";
+            return;
+        }
+        datos[tam++] = e;
+    }
+    
+    int Busca(int id) {
+        for (int i = 0; i < tam; i++) {
+            if (datos[i].id == id)
+                return i;
+        }
+        return -1;
+    }
+    
+    void Elimina(int pos) {
+        if (Vacia() || pos < 0 || pos >= tam) {
+            cout << "Posición no válida\n";
+            return;
+        }
+        for (int i = pos; i < tam - 1; i++) {
+            datos[i] = datos[i + 1];
+        }
+        tam--;
+    }
+    
+    void Inserta(Empleado e, int pos) {
+        if (Llena() || pos < 0 || pos > tam) {
+            cout << "No se puede insertar\n";
+            return;
+        }
+        for (int i = tam; i > pos; i--) {
+            datos[i] = datos[i - 1];
+        }
+        datos[pos] = e;
+        tam++;
+    }
+    
+    void Muestra() {
+        if (Vacia()) {
+            cout << "Lista vacía\n";
+            return;
+        }
+        for (int i = 0; i < tam; i++) {
+            cout << "ID: " << datos[i].id << " - Nombre: " << datos[i].nombre << endl;
+        }
+    }
+};
+
+int main() {
+    ListaEstatica lista;
+    int opcion, id, pos;
+    string nombre;
+    
+    do {
+        cout << "\n1. Agregar\n2. Buscar\n3. Eliminar\n4. Insertar\n5. Mostrar\n6. Salir\nOpción: ";
+        cin >> opcion;
+        
+        switch(opcion) {
+            case 1:
+                cout << "Ingrese ID y Nombre: ";
+                cin >> id >> nombre;
+                lista.Agrega(Empleado(nombre, id));
+                break;
+            case 2:
+                cout << "Ingrese ID para buscar: ";
+                cin >> id;
+                pos = lista.Busca(id);
+                if (pos != -1)
+                    cout << "Encontrado en posición: " << pos << endl;
+                else
+                    cout << "No encontrado\n";
+                break;
+            case 3:
+                cout << "Ingrese posición a eliminar: ";
+                cin >> pos;
+                lista.Elimina(pos);
+                break;
+            case 4:
+                cout << "Ingrese ID, Nombre y Posición: ";
+                cin >> id >> nombre >> pos;
+                lista.Inserta(Empleado(nombre, id), pos);
+                break;
+            case 5:
+                lista.Muestra();
+                break;
+            case 6:
+                cout << "Saliendo...\n";
+                break;
+            default:
+                cout << "Opción inválida\n";
+        }
+    } while (opcion != 6);
+    
+    return 0;
+}
