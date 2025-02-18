@@ -19,3 +19,6 @@ Jefe directo: Director General
 Problema 2
 Materia programación: 08
 Bases de datos: 10
+
+Problema 3
+Lista estatica
