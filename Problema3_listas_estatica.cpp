@@ -14,6 +14,11 @@ public:
     bool operator==(const Empleado &otro) const {
         return id == otro.id;
     }
+
+    friend std::ostream& operator<<(std::ostream& os, const Empleado& e) {
+        os << "ID: " << e.id << ", Nombre: " << e.nombre;
+        return os;
+    }
 };
 
 template <typename T>
@@ -78,9 +83,26 @@ public:
 
     void Muestra() const {
         for (int i = 0; i < tam; i++) {
-            std::cout << "ID: " << datos[i].id << ", Nombre: " << datos[i].nombre << "\n";
+            std::cout << datos[i] << "\n";
         }
         std::cout << "\n";
+    }
+
+    T& operator[](int index) {
+        return datos[index];
+    }
+
+    ListaEstatica& operator+(const T& elem) {
+        Agrega(elem);
+        return *this;
+    }
+
+    ListaEstatica& operator-(const T& elem) {
+        int pos = Busca(elem);
+        if (pos != -1) {
+            Elimina(pos);
+        }
+        return *this;
     }
 };
 
@@ -91,7 +113,7 @@ int main() {
         std::cout << "\nMenú:\n1. Agrega\n2. Buscar\n3. Elimina\n4. Inserta\n5. Muestra\n6. Salir\nSeleccione una opción: ";
         std::cin >> opcion;
         std::cin.ignore();
-
+        
         if (opcion == 1) {
             std::string nombre;
             int id;
@@ -100,7 +122,7 @@ int main() {
             std::cin.ignore();
             std::cout << "Ingrese Nombre: ";
             std::getline(std::cin, nombre);
-            lista.Agrega(Empleado(nombre, id));
+            lista + Empleado(nombre, id);
         } else if (opcion == 2) {
             int id;
             std::cout << "Ingrese ID del empleado a buscar: ";
@@ -114,13 +136,7 @@ int main() {
             int id;
             std::cout << "Ingrese ID del empleado a eliminar: ";
             std::cin >> id;
-            int pos = lista.Busca(Empleado("", id));
-            if (pos != -1) {
-                lista.Elimina(pos);
-                std::cout << "Empleado eliminado\n";
-            } else {
-                std::cout << "Empleado no encontrado\n";
-            }
+            lista - Empleado("", id);
         } else if (opcion == 4) {
             std::string nombre;
             int id, pos;
@@ -140,6 +156,6 @@ int main() {
             std::cout << "Opción no válida. Intente de nuevo.\n";
         }
     } while (opcion != 6);
-
+    
     return 0;
 }
