@@ -1,74 +1,71 @@
 #include <iostream>
-using namespace std;
+#include <string>
 
 class Materia {
+private:
+    int clave;
+    std::string nombre;
+    std::string profesorTitular;
+    std::string libroTexto;
+
 public:
-    int Clave;
-    string Nombre;
-    string ProfesorTit;
-    string LibroTexto;
+    Materia() : clave(0), nombre(""), profesorTitular(""), libroTexto("") {}
+    Materia(int clave, std::string nom, std::string profe, std::string libro)
+        : clave(clave), nombre(nom), profesorTitular(profe), libroTexto(libro) {}
 
-    Materia(int clave, string nombre, string profesor, string libro)
-        : Clave(clave), Nombre(nombre), ProfesorTit(profesor), LibroTexto(libro) {}
-
-    void Imprime() const {
-        cout << "Clave: " << Clave << endl;
-        cout << "Nombre: " << Nombre << endl;
-        cout << "Profesor Titular: " << ProfesorTit << endl;
-        cout << "Libro de Texto: " << LibroTexto << endl;
+    void cambiaClave(int nuevaClave) { clave = nuevaClave; }
+    void cambiaProfesor(const std::string& nuevoProfe) { profesorTitular = nuevoProfe; }
+    void imprime() const {
+        std::cout << "Clave: " << clave << "\nNombre: " << nombre
+                  << "\nProfesor Titular: " << profesorTitular
+                  << "\nLibro de Texto: " << libroTexto << "\n";
     }
+    int getClave() const { return clave; }
 
-    Materia& operator=(int nuevaClave) {
-        Clave = nuevaClave;
-        return *this;
-    }
-
-    Materia& operator=(const string& nuevoProfesor) {
-        ProfesorTit = nuevoProfesor;
-        return *this;
+    // Sobrecarga de operadores
+    bool operator==(const Materia& otra) const { return clave == otra.clave; }
+    bool operator!=(const Materia& otra) const { return clave != otra.clave; }
+    bool operator>(const Materia& otra) const { return clave > otra.clave; }
+    bool operator<(const Materia& otra) const { return clave < otra.clave; }
+    Materia operator+(const Materia& otra) const {
+        return Materia(clave + otra.clave, nombre, profesorTitular, libroTexto);
     }
 };
 
 int main() {
-    Materia prog(101, "Programacion", "Jorge Perez", "C++ Basico");
-    Materia bd(102, "Bases de Datos", "Maria Gomez", "SQL Fundamentos");
+    Materia programacion(101, "Programacion", "Dr. Lopez", "C++ Primer"),
+            basesDatos(102, "Bases de Datos", "Ing. Martinez", "Database Systems");
 
     int opcion, nuevaClave;
-    string nuevoProfesor;
+    std::string nuevoDato;
 
     do {
-        cout << "\nMenu de opciones:" << endl;
-        cout << "1. Cambiar clave de Programacion" << endl;
-        cout << "2. Cambiar profesor de Bases de Datos" << endl;
-        cout << "3. Imprimir datos de Bases de Datos" << endl;
-        cout << "4. Salir" << endl;
-        cout << "Seleccione una opcion: ";
-        cin >> opcion;
-        cin.ignore();
+        std::cout << "\nMenu:\n1. Cambiar clave de Programacion\n2. Cambiar profesor de Bases de Datos\n3. Imprimir datos de Bases de Datos\n4. Salir\nSeleccione una opcion: ";
+        std::cin >> opcion;
 
         switch (opcion) {
             case 1:
-                cout << "Ingrese la nueva clave de Programacion: ";
-                cin >> nuevaClave;
-                prog = nuevaClave;
+                std::cout << "Ingrese la nueva clave para Programacion: ";
+                std::cin >> nuevaClave;
+                programacion.cambiaClave(nuevaClave);
                 break;
             case 2:
-                cout << "Ingrese el nuevo profesor de Bases de Datos: ";
-                cin.ignore();
-                getline(cin, nuevoProfesor);
-                bd = nuevoProfesor;
+                std::cin.ignore();
+                std::cout << "Ingrese el nuevo profesor de Bases de Datos: ";
+                std::getline(std::cin, nuevoDato);
+                basesDatos.cambiaProfesor(nuevoDato);
                 break;
             case 3:
-                bd.Imprime();
+                basesDatos.imprime();
                 break;
             case 4:
-                cout << "Saliendo del programa..." << endl;
+                std::cout << "Saliendo...\n";
                 break;
             default:
-                cout << "Opcion invalida." << endl;
+                std::cout << "Opcion invalida, intente de nuevo.\n";
         }
     } while (opcion != 4);
-
+    
     return 0;
 }
 
