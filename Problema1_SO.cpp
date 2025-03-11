@@ -1,94 +1,82 @@
 #include <iostream>
-using namespace std;
+#include <string>
 
 class Empleado {
+private:
+    int claveEmpleado;
+    std::string nombre;
+    std::string domicilio;
+    float sueldo;
+    std::string reportaA;
+
 public:
-    int ClaveEmpleado;
-    string Nombre;
-    string Domicilio;
-    float Sueldo;
-    string ReportaA;
+    Empleado() : claveEmpleado(0), nombre(""), domicilio(""), sueldo(0.0), reportaA("") {}
+    Empleado(int clave, std::string nom, std::string dom, float suel, std::string rep)
+        : claveEmpleado(clave), nombre(nom), domicilio(dom), sueldo(suel), reportaA(rep) {}
 
-    Empleado(int clave, string nombre, string domicilio, float sueldo, string reportaA)
-        : ClaveEmpleado(clave), Nombre(nombre), Domicilio(domicilio), Sueldo(sueldo), ReportaA(reportaA) {}
-
-    void Imprime() const {
-        cout << "Clave: " << ClaveEmpleado << endl;
-        cout << "Nombre: " << Nombre << endl;
-        cout << "Domicilio: " << Domicilio << endl;
-        cout << "Sueldo: " << Sueldo << endl;
-        cout << "Reporta a: " << ReportaA << endl;
+    void cambiaDomicilio(const std::string& nuevoDomicilio) { domicilio = nuevoDomicilio; }
+    void actualizaSueldo(float porcentaje) { sueldo += sueldo * (porcentaje / 100); }
+    void cambiaReportaA(const std::string& nuevoJefe) { reportaA = nuevoJefe; }
+    void imprime() const {
+        std::cout << "Clave: " << claveEmpleado << "\nNombre: " << nombre
+                  << "\nDomicilio: " << domicilio << "\nSueldo: " << sueldo
+                  << "\nReporta a: " << reportaA << "\n";
     }
-
-    Empleado& operator+=(float porcentaje) {
-        Sueldo += Sueldo * (porcentaje / 100);
-        return *this;
-    }
-
-    Empleado& operator=(const string& nuevoDomicilio) {
-        Domicilio = nuevoDomicilio;
-        return *this;
-    }
-
-    void operator()(const string& nuevoReportaA) {
-        ReportaA = nuevoReportaA;
-    }
+    int getClave() const { return claveEmpleado; }
 };
 
 int main() {
-    Empleado emp1(101, "Juan Gonzalez", "Calle Rio", 15000, "Gerente A");
-    Empleado emp2(102, "Elizabeth Gomez", "Avenida Azul", 18000, "Gerente B");
+    Empleado empleado1(101, "Juan Perez", "Calle azul, 123", 50000, "Maria Lopez");
+    Empleado empleado2(102, "Ana Torres", "Calle rojo, 456", 55000, "Carlos Gomez");
 
     int opcion, clave;
-    string nuevoDomicilio, nuevoReportaA;
+    std::string nuevoDato;
     float porcentaje;
 
     do {
-        cout << "\nMenu de opciones:" << endl;
-        cout << "1. Cambiar domicilio" << endl;
-        cout << "2. Actualizar sueldo" << endl;
-        cout << "3. Imprimir datos" << endl;
-        cout << "4. Cambiar Jefe" << endl;
-        cout << "5. Salir" << endl;
-        cout << "Seleccione una opcion: ";
-        cin >> opcion;
-        cin.ignore();
+        std::cout << "\nMenu:\n1. Cambiar domicilio\n2. Actualizar sueldo\n3. Imprimir datos\n4. Cambiar reporta a\n5. Salir\nSeleccione una opcion: ";
+        std::cin >> opcion;
 
         switch (opcion) {
             case 1:
-                cout << "Ingrese clave del empleado: ";
-                cin >> clave;
-                cin.ignore();
-                cout << "Ingrese nuevo domicilio: ";
-                getline(cin, nuevoDomicilio);
-                (clave == emp1.ClaveEmpleado ? emp1 : emp2) = nuevoDomicilio;
+                std::cout << "Ingrese la clave del empleado: ";
+                std::cin >> clave;
+                std::cin.ignore();
+                std::cout << "Ingrese el nuevo domicilio: ";
+                std::getline(std::cin, nuevoDato);
+                if (clave == empleado1.getClave()) empleado1.cambiaDomicilio(nuevoDato);
+                else if (clave == empleado2.getClave()) empleado2.cambiaDomicilio(nuevoDato);
                 break;
             case 2:
-                cout << "Ingrese clave del empleado: ";
-                cin >> clave;
-                cout << "Ingrese porcentaje de aumento: ";
-                cin >> porcentaje;
-                (clave == emp1.ClaveEmpleado ? emp1 : emp2) += porcentaje;
+                std::cout << "Ingrese la clave del empleado: ";
+                std::cin >> clave;
+                std::cout << "Ingrese el porcentaje de aumento: ";
+                std::cin >> porcentaje;
+                if (clave == empleado1.getClave()) empleado1.actualizaSueldo(porcentaje);
+                else if (clave == empleado2.getClave()) empleado2.actualizaSueldo(porcentaje);
                 break;
             case 3:
-                cout << "Ingrese clave del empleado: ";
-                cin >> clave;
-                (clave == emp1.ClaveEmpleado ? emp1 : emp2).Imprime();
+                std::cout << "Ingrese la clave del empleado: ";
+                std::cin >> clave;
+                if (clave == empleado1.getClave()) empleado1.imprime();
+                else if (clave == empleado2.getClave()) empleado2.imprime();
                 break;
             case 4:
-                cout << "Ingrese clave del empleado: ";
-                cin >> clave;
-                cin.ignore();
-                cout << "Ingrese nuevo nombre del Jefe: ";
-                getline(cin, nuevoReportaA);
-                (clave == emp1.ClaveEmpleado ? emp1 : emp2)(nuevoReportaA);
+                std::cout << "Ingrese la clave del empleado: ";
+                std::cin >> clave;
+                std::cin.ignore();
+                std::cout << "Ingrese el nuevo nombre de la persona a quien reporta: ";
+                std::getline(std::cin, nuevoDato);
+                if (clave == empleado1.getClave()) empleado1.cambiaReportaA(nuevoDato);
+                else if (clave == empleado2.getClave()) empleado2.cambiaReportaA(nuevoDato);
                 break;
             case 5:
-                cout << "Saliendo del programa..." << endl;
+                std::cout << "Saliendo...\n";
                 break;
             default:
-                cout << "Opcion invalida." << endl;
+                std::cout << "Opcion invalida, intente de nuevo.\n";
         }
     } while (opcion != 5);
 
     return 0;
+}
