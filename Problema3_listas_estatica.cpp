@@ -4,19 +4,23 @@
 const int MAX = 500;
 
 class Empleado {
-public:
+private:
+    int claveEmpleado;
     std::string nombre;
-    int id;
 
-    Empleado() : nombre(""), id(0) {}
-    Empleado(std::string n, int i) : nombre(n), id(i) {}
+public:
+    Empleado() : claveEmpleado(0), nombre("") {}
+    Empleado(int clave, std::string nom) : claveEmpleado(clave), nombre(nom) {}
 
-    bool operator==(const Empleado &otro) const {
-        return id == otro.id;
+    int getClave() const { return claveEmpleado; }
+    std::string getNombre() const { return nombre; }
+
+    bool operator==(const Empleado& otro) const {
+        return claveEmpleado == otro.claveEmpleado;
     }
 
     friend std::ostream& operator<<(std::ostream& os, const Empleado& e) {
-        os << "ID: " << e.id << ", Nombre: " << e.nombre;
+        os << "Clave: " << e.claveEmpleado << ", Nombre: " << e.nombre;
         return os;
     }
 };
@@ -30,132 +34,125 @@ private:
 public:
     ListaEstatica() : tam(0) {}
 
-    int Inserta(T elem, int pos) {
-        if (Llena() || pos < 0 || pos > tam) {
-            std::cout << "\nError de inserción";
+    bool Agrega(T elem) {
+        if (tam >= MAX) {
+            std::cout << "\nLista llena. No se pudo agregar.";
+            return false;
+        }
+        datos[tam++] = elem;
+        return true;
+    }
+
+    int Busca(T elem) {
+        if (tam == 0) {
+            std::cout << "\nLa lista está vacía.";
             return -1;
+        }
+        for (int i = 0; i < tam; i++) {
+            if (datos[i] == elem) {
+                std::cout << "\nEmpleado encontrado en la posición: " << i;
+                return i;
+            }
+        }
+        std::cout << "\nEmpleado no encontrado.";
+        return -1;
+    }
+
+    bool Elimina(T elem) {
+        if (tam == 0) {
+            std::cout << "\nLa lista está vacía. No se puede eliminar.";
+            return false;
+        }
+        int pos = Busca(elem);
+        if (pos == -1) return false;
+        for (int i = pos; i < tam - 1; i++) {
+            datos[i] = datos[i + 1];
+        }
+        tam--;
+        return true;
+    }
+
+    bool Inserta(T elem, int pos) {
+        if (tam >= MAX) {
+            std::cout << "\nLista llena. No se pudo insertar.";
+            return false;
+        }
+        if (pos < 0 || pos > tam) {
+            std::cout << "\nPosición inválida.";
+            return false;
         }
         for (int i = tam; i > pos; --i) {
             datos[i] = datos[i - 1];
         }
         datos[pos] = elem;
         tam++;
-        return pos;
+        return true;
     }
 
-    int Agrega(T elem) {
-        if (Llena()) {
-            std::cout << "\nLista llena";
-            return -1;
+    void Muestra() {
+        if (tam == 0) {
+            std::cout << "\nLa lista está vacía.";
+            return;
         }
-        datos[tam++] = elem;
-        return tam - 1;
-    }
-
-    int Busca(T elem) {
-        for (int i = 0; i < tam; i++) {
-            if (datos[i] == elem) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    int Elimina(int pos) {
-        if (Vacia() || pos < 0 || pos >= tam) {
-            std::cout << "\nError de eliminación";
-            return -1;
-        }
-        for (int i = pos; i < tam - 1; i++) {
-            datos[i] = datos[i + 1];
-        }
-        tam--;
-        return pos;
-    }
-
-    bool Vacia() const {
-        return tam == 0;
-    }
-
-    bool Llena() const {
-        return tam == MAX;
-    }
-
-    void Muestra() const {
         for (int i = 0; i < tam; i++) {
             std::cout << datos[i] << "\n";
         }
-        std::cout << "\n";
-    }
-
-    T& operator[](int index) {
-        return datos[index];
-    }
-
-    ListaEstatica& operator+(const T& elem) {
-        Agrega(elem);
-        return *this;
-    }
-
-    ListaEstatica& operator-(const T& elem) {
-        int pos = Busca(elem);
-        if (pos != -1) {
-            Elimina(pos);
-        }
-        return *this;
     }
 };
 
 int main() {
     ListaEstatica<Empleado> lista;
     int opcion;
+
     do {
-        std::cout << "\nMenú:\n1. Agrega\n2. Buscar\n3. Elimina\n4. Inserta\n5. Muestra\n6. Salir\nSeleccione una opción: ";
+        std::cout << "\n\nMenú:";
+        std::cout << "\n1. Agrega\n2. Buscar\n3. Elimina\n4. Inserta\n5. Muestra\n6. Salir";
+        std::cout << "\nSeleccione una opción: ";
         std::cin >> opcion;
-        std::cin.ignore();
-        
+
         if (opcion == 1) {
+            int clave;
             std::string nombre;
-            int id;
-            std::cout << "Ingrese ID: ";
-            std::cin >> id;
+            std::cout << "Ingrese clave del empleado: ";
+            std::cin >> clave;
             std::cin.ignore();
-            std::cout << "Ingrese Nombre: ";
+            std::cout << "Ingrese nombre del empleado: ";
             std::getline(std::cin, nombre);
-            lista + Empleado(nombre, id);
-        } else if (opcion == 2) {
-            int id;
-            std::cout << "Ingrese ID del empleado a buscar: ";
-            std::cin >> id;
-            int pos = lista.Busca(Empleado("", id));
-            if (pos != -1)
-                std::cout << "Empleado encontrado en la posición: " << pos << "\n";
-            else
-                std::cout << "Empleado no encontrado\n";
-        } else if (opcion == 3) {
-            int id;
-            std::cout << "Ingrese ID del empleado a eliminar: ";
-            std::cin >> id;
-            lista - Empleado("", id);
-        } else if (opcion == 4) {
+            lista.Agrega(Empleado(clave, nombre));
+        }
+        else if (opcion == 2) {
+            int clave;
+            std::cout << "Ingrese clave del empleado a buscar: ";
+            std::cin >> clave;
+            lista.Busca(Empleado(clave, ""));
+        }
+        else if (opcion == 3) {
+            int clave;
+            std::cout << "Ingrese clave del empleado a eliminar: ";
+            std::cin >> clave;
+            lista.Elimina(Empleado(clave, ""));
+        }
+        else if (opcion == 4) {
+            int clave, pos;
             std::string nombre;
-            int id, pos;
-            std::cout << "Ingrese ID: ";
-            std::cin >> id;
+            std::cout << "Ingrese clave del empleado a insertar: ";
+            std::cin >> clave;
             std::cin.ignore();
-            std::cout << "Ingrese Nombre: ";
+            std::cout << "Ingrese nombre del empleado: ";
             std::getline(std::cin, nombre);
-            std::cout << "Ingrese la posición donde insertar: ";
+            std::cout << "Ingrese la posición: ";
             std::cin >> pos;
-            lista.Inserta(Empleado(nombre, id), pos);
-        } else if (opcion == 5) {
+            lista.Inserta(Empleado(clave, nombre), pos);
+        }
+        else if (opcion == 5) {
             lista.Muestra();
-        } else if (opcion == 6) {
-            std::cout << "Saliendo...\n";
-        } else {
-            std::cout << "Opción no válida. Intente de nuevo.\n";
+        }
+        else if (opcion == 6) {
+            std::cout << "Saliendo...";
+        }
+        else {
+            std::cout << "Opción inválida. Intente de nuevo.";
         }
     } while (opcion != 6);
-    
     return 0;
 }
