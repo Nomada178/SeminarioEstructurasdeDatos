@@ -58,19 +58,19 @@ void registrarSocio(LSLSE<SocioClub>& lista) {
     // Verificar si ya existe
     node<SocioClub>* aux = lista.primero();
     while (aux != nullptr) {
-        if (aux->data == nuevo) {
+        if (aux->getData() == nuevo) {
             cout << "Error: Ya existe un socio con ese número.\n";
             return;
         }
-        aux = aux->sig;
+        aux = aux->getSig();
     }
 
     // Insertar ordenado por numeroSocio
     node<SocioClub>* pos = nullptr;
     aux = lista.primero();
-    while (aux != nullptr && aux->data < nuevo) {
+    while (aux != nullptr && aux->getData() < nuevo) {
         pos = aux;
-        aux = aux->sig;
+        aux = aux->getSig();
     }
     lista.insertar(pos, nuevo);
     cout << "Socio registrado correctamente.\n";
@@ -83,12 +83,12 @@ void eliminarSocio(LSLSE<SocioClub>& lista) {
 
     node<SocioClub>* aux = lista.primero();
     while (aux != nullptr) {
-        if (aux->data.getNumeroSocio() == num) {
+        if (aux->getData().getNumeroSocio() == num) {
             lista.eliminar(aux);
             cout << "Socio eliminado.\n";
             return;
         }
-        aux = aux->sig;
+        aux = aux->getSig();
     }
     cout << "Socio no encontrado.\n";
 }
@@ -101,8 +101,8 @@ void reporteSocios(const LSLSE<SocioClub>& lista) {
     node<SocioClub>* aux = lista.primero();
     cout << "\n--- Lista de Socios ---\n";
     while (aux != nullptr) {
-        cout << aux->data << endl;
-        aux = aux->sig;
+        cout << aux->getData() << endl;
+        aux = aux->getSig();
     }
 }
 
@@ -116,11 +116,11 @@ void buscarSocio(const LSLSE<SocioClub>& lista) {
 
     node<SocioClub>* aux = lista.primero();
     while (aux != nullptr) {
-        if (aux->data.getNombre() == nombre && aux->data.getDomicilio() == dom) {
-            cout << "Socio encontrado: " << aux->data << endl;
+       if (aux->getData().getNombre() == nombre && aux->getData().getDomicilio() == dom){
+            cout << "Socio encontrado: " <<aux->getData() << endl;
             return;
         }
-        aux = aux->sig;
+        aux = aux->getSig();
     }
     cout << "Socio no encontrado.\n";
 }
@@ -130,7 +130,7 @@ void contarSocios(const LSLSE<SocioClub>& lista) {
     node<SocioClub>* aux = lista.primero();
     while (aux != nullptr) {
         total++;
-        aux = aux->sig;
+        aux = aux->getSig();
     }
     cout << "Total de socios registrados: " << total << endl;
 }
