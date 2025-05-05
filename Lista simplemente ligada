@@ -1,0 +1,167 @@
+#include <iostream>
+#include <string>
+#include "LSLSE.h" // Aquí se incluye tu archivo con la clase LSLSE (debes cambiar el nombre si es diferente)
+
+using namespace std;
+
+// -------- Clase SocioClub --------
+class SocioClub {
+private:
+    int numeroSocio;
+    string nombreSocio;
+    string domicilio;
+    int anioIngreso;
+public:
+    SocioClub() : numeroSocio(0), nombreSocio(""), domicilio(""), anioIngreso(0) {}
+    SocioClub(int num, string nombre, string dom, int anio)
+        : numeroSocio(num), nombreSocio(nombre), domicilio(dom), anioIngreso(anio) {}
+
+    int getNumeroSocio() const { return numeroSocio; }
+    string getNombre() const { return nombreSocio; }
+    string getDomicilio() const { return domicilio; }
+
+    bool operator<(const SocioClub& otro) const {
+        return numeroSocio < otro.numeroSocio;
+    }
+
+    bool operator==(const SocioClub& otro) const {
+        return numeroSocio == otro.numeroSocio;
+    }
+
+    friend ostream& operator<<(ostream& os, const SocioClub& socio) {
+        os << "Num: " << socio.numeroSocio
+           << ", Nombre: " << socio.nombreSocio
+           << ", Domicilio: " << socio.domicilio
+           << ", Año Ingreso: " << socio.anioIngreso;
+        return os;
+    }
+};
+
+// -------- Funciones auxiliares --------
+
+void registrarSocio(LSLSE<SocioClub>& lista) {
+    int num, anio;
+    string nombre, dom;
+
+    cout << "Ingrese Numero de Socio: ";
+    cin >> num;
+    cin.ignore();
+    cout << "Ingrese Nombre: ";
+    getline(cin, nombre);
+    cout << "Ingrese Domicilio: ";
+    getline(cin, dom);
+    cout << "Ingrese Año de Ingreso: ";
+    cin >> anio;
+
+    SocioClub nuevo(num, nombre, dom, anio);
+
+    // Verificar si ya existe
+    node<SocioClub>* aux = lista.primero();
+    while (aux != nullptr) {
+        if (aux->data == nuevo) {
+            cout << "Error: Ya existe un socio con ese número.\n";
+            return;
+        }
+        aux = aux->sig;
+    }
+
+    // Insertar ordenado por numeroSocio
+    node<SocioClub>* pos = nullptr;
+    aux = lista.primero();
+    while (aux != nullptr && aux->data < nuevo) {
+        pos = aux;
+        aux = aux->sig;
+    }
+    lista.insertar(pos, nuevo);
+    cout << "Socio registrado correctamente.\n";
+}
+
+void eliminarSocio(LSLSE<SocioClub>& lista) {
+    int num;
+    cout << "Ingrese Numero de Socio a eliminar: ";
+    cin >> num;
+
+    node<SocioClub>* aux = lista.primero();
+    while (aux != nullptr) {
+        if (aux->data.getNumeroSocio() == num) {
+            lista.eliminar(aux);
+            cout << "Socio eliminado.\n";
+            return;
+        }
+        aux = aux->sig;
+    }
+    cout << "Socio no encontrado.\n";
+}
+
+void reporteSocios(const LSLSE<SocioClub>& lista) {
+    if (lista.vacia()) {
+        cout << "No hay socios registrados.\n";
+        return;
+    }
+    node<SocioClub>* aux = lista.primero();
+    cout << "\n--- Lista de Socios ---\n";
+    while (aux != nullptr) {
+        cout << aux->data << endl;
+        aux = aux->sig;
+    }
+}
+
+void buscarSocio(const LSLSE<SocioClub>& lista) {
+    string nombre, dom;
+    cin.ignore();
+    cout << "Ingrese Nombre a buscar: ";
+    getline(cin, nombre);
+    cout << "Ingrese Domicilio a buscar: ";
+    getline(cin, dom);
+
+    node<SocioClub>* aux = lista.primero();
+    while (aux != nullptr) {
+        if (aux->data.getNombre() == nombre && aux->data.getDomicilio() == dom) {
+            cout << "Socio encontrado: " << aux->data << endl;
+            return;
+        }
+        aux = aux->sig;
+    }
+    cout << "Socio no encontrado.\n";
+}
+
+void contarSocios(const LSLSE<SocioClub>& lista) {
+    int total = 0;
+    node<SocioClub>* aux = lista.primero();
+    while (aux != nullptr) {
+        total++;
+        aux = aux->sig;
+    }
+    cout << "Total de socios registrados: " << total << endl;
+}
+
+// -------- Función principal --------
+
+int main() {
+    LSLSE<SocioClub> listaSocios;
+    int opcion;
+
+    do {
+        cout << "\n---- MENU ----\n";
+        cout << "1. Registrar socio\n";
+        cout << "2. Eliminar socio\n";
+        cout << "3. Generar reporte\n";
+        cout << "4. Buscar socio\n";
+        cout << "5. Contar socios\n";
+        cout << "0. Salir\n";
+        cout << "Seleccione una opcion: ";
+        cin >> opcion;
+
+        switch(opcion) {
+            case 1: registrarSocio(listaSocios); break;
+            case 2: eliminarSocio(listaSocios); break;
+            case 3: reporteSocios(listaSocios); break;
+            case 4: buscarSocio(listaSocios); break;
+            case 5: contarSocios(listaSocios); break;
+            case 0: cout << "Saliendo...\n"; break;
+            default: cout << "Opción inválida\n";
+        }
+    } while(opcion != 0);
+
+    return 0;
+}
