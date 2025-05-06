@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include "LSLSE.h" // Aquí se incluye tu archivo con la clase LSLSE (debes cambiar el nombre si es diferente)
+#include "LSLSE.h" // Ordenamientos
 
 using namespace std;
 
@@ -37,7 +37,7 @@ public:
     }
 };
 
-// -------- Funciones auxiliares --------
+
 
 void registrarSocio(LSLSE<SocioClub>& lista) {
     int num, anio;
@@ -65,7 +65,7 @@ void registrarSocio(LSLSE<SocioClub>& lista) {
         aux = aux->getSig();
     }
 
-    // Insertar ordenado por numeroSocio
+ 
     node<SocioClub>* pos = nullptr;
     aux = lista.primero();
     while (aux != nullptr && aux->getData() < nuevo) {
