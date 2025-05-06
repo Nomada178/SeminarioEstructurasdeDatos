@@ -5,7 +5,6 @@
 
 const int TAM = 100;
 
-//***************************Definicion de la clase persona*************************
 class persona {
 private:
     std::string nombre;
@@ -46,7 +45,6 @@ public:
     }
 };
 
-//****************************Definicion de la clase Cola****************************
 class Cola {
 private:
     persona datos[TAM];
@@ -99,4 +97,4 @@ public:
     }
 };
 
-#endif // COLA_H
+#endif 
