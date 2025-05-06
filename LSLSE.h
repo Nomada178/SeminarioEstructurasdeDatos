@@ -14,7 +14,7 @@ private:
 public:
     node() : sig(nullptr) {}
 
-    // Métodos de acceso público
+    // públicos
     T getData() const { return data; }
     node<T>* getSig() const { return sig; }
 
