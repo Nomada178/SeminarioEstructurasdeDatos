@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 
-// Plantilla para la clase Cola
+// Practica 5
 template <typename T>
 class Cola {
 private:
