@@ -1,145 +1,182 @@
 #include <iostream>
 #include <string>
+const int Tam = 50;
 
-// Practica 5
-template <typename T>
-class Cola {
+class alumno {
 private:
-    struct Nodo {
-        T dato;
-        Nodo* siguiente;
-        Nodo(T d) : dato(d), siguiente(nullptr) {}
-    };
-
-    Nodo* frente;
-    Nodo* final;
-
-public:
-    Cola() : frente(nullptr), final(nullptr) {}
-
-    bool Vacia() const {
-        return frente == nullptr;
-    }
-
-    void Enqueue(const T& s) {
-        Nodo* nuevo = new Nodo(s);
-        if (Vacia()) {
-            frente = final = nuevo;
-        } else {
-            final->siguiente = nuevo;
-            final = nuevo;
-        }
-    }
-
-    void Dequeue() {
-        if (Vacia()) {
-            std::cout << "\nCola vacia, no hay solicitudes para procesar.";
-            return;
-        }
-        Nodo* temp = frente;
-        frente = frente->siguiente;
-        delete temp;
-        if (frente == nullptr) {
-            final = nullptr;
-        }
-    }
-
-    void MostrarFrente() const {
-        if (Vacia()) {
-            std::cout << "\nCola vacia, no hay solicitudes para mostrar.";
-            return;
-        }
-        std::cout << frente->dato << "\n";
-    }
-
-    int BuscarLineal(const T& s) const {
-        Nodo* actual = frente;
-        int posicion = 0;
-        while (actual) {
-            if (actual->dato == s) {
-                return posicion;
-            }
-            actual = actual->siguiente;
-            posicion++;
-        }
-        return -1;
-    }
-};
-
-class Solicitud {
-public:
     std::string nombre;
     std::string carrera;
-    int materias_aprobadas;
+    int aprobadas;
     float promedio;
 
-    Solicitud(std::string n, std::string c, int m, float p)
-        : nombre(n), carrera(c), materias_aprobadas(m), promedio(p) {}
+public:
+    alumno() : nombre(" "), carrera(" "), aprobadas(0), promedio(0.0f) {}
 
-    bool operator==(const Solicitud &otro) const {
-        return nombre == otro.nombre && carrera == otro.carrera;
+    void setNombre(const std::string& nom) { nombre = nom; }
+    void setCarrera(const std::string& carr) { carrera = carr; }
+    void setAprobadas(int apro) { aprobadas = apro; }
+    void setPromedio(float prom) { promedio = prom; }
+
+    std::string getNombre() const { return nombre; }
+    std::string getCarrera() const { return carrera; }
+    int getAprobadas() const { return aprobadas; }
+    float getPromedio() const { return promedio; }
+
+    friend std::ostream& operator<<(std::ostream& os, const alumno& emp);
+    friend std::istream& operator>>(std::istream& is, alumno& emp);
+
+    bool operator==(const alumno& otro) const {
+        return promedio == otro.promedio && nombre == otro.nombre &&
+               aprobadas == otro.aprobadas && carrera == otro.carrera;
     }
 
-    bool operator<(const Solicitud &otro) const {
-        return promedio < otro.promedio;
-    }
-
-    bool operator>(const Solicitud &otro) const {
+    bool operator>(const alumno& otro) const {
         return promedio > otro.promedio;
     }
 
-    friend std::ostream& operator<<(std::ostream& os, const Solicitud& s) {
-        os << "Nombre: " << s.nombre << ", Carrera: " << s.carrera
-           << ", Materias aprobadas: " << s.materias_aprobadas
-           << ", Promedio: " << s.promedio;
-        return os;
+    bool operator<(const alumno& otro) const {
+        return promedio < otro.promedio;
+    }
+
+    bool operator!=(const alumno& otro) const {
+        return !(*this == otro);
+    }
+
+    alumno operator+(const alumno& otro) const {
+        alumno temp;
+        temp.promedio = this->promedio + otro.promedio;
+        return temp;
     }
 };
 
-int main() {
-    Cola<Solicitud> cola;
-    int opcion;
-    do {
-        std::cout << "\nMenu:\n1. Registrar materias \n2. Procesar registro \n3. Mostrar Frente\n4. Buscar solicitud (lineal)\n5. Salir\nSeleccione una opcion: ";
-        std::cin >> opcion;
-        std::cin.ignore();
+class ColaEmpleado {
+private:
+    alumno datos[Tam];
+    int frente, final;
 
-        if (opcion == 1) {
-            std::string nombre, carrera;
-            int materias_aprobadas;
-            float promedio;
-            std::cout << "Ingrese Nombre: ";
-            std::getline(std::cin, nombre);
-            std::cout << "Ingrese Carrera: ";
-            std::getline(std::cin, carrera);
-            std::cout << "Ingrese Materias Aprobadas: ";
-            std::cin >> materias_aprobadas;
-            std::cout << "Ingrese Promedio: ";
-            std::cin >> promedio;
-            cola.Enqueue(Solicitud(nombre, carrera, materias_aprobadas, promedio));
-        } else if (opcion == 2) {
-            cola.Dequeue();
-        } else if (opcion == 3) {
-            cola.MostrarFrente();
-        } else if (opcion == 4) {
-            std::string nombre, carrera;
-            std::cout << "Ingrese Nombre: ";
-            std::getline(std::cin, nombre);
-            std::cout << "Ingrese Carrera: ";
-            std::getline(std::cin, carrera);
-            Solicitud s(nombre, carrera, 0, 0);
-            int pos = cola.BuscarLineal(s);
-            if (pos != -1) {
-                std::cout << "Faltan " << pos << " constancias antes de la suya.\n";
-            } else {
-                std::cout << "No se encontro la solicitud. Debe darla de alta.\n";
-            }
-        } else if (opcion == 5) {
-            std::cout << "Saliendo...\n";
+public:
+    ColaEmpleado() : frente(0), final(-1) {}
+
+    bool vacia() const { return final < frente; }
+    bool llena() const { return final == Tam - 1; }
+
+    void insertar(const alumno& emp) {
+        if (llena()) {
+            std::cout << "\nError: Cola llena.\n";
         } else {
-            std::cout << "Opcion no valida. Intente de nuevo.\n";
+            datos[++final] = emp;
         }
-    } while (opcion != 5);
+    }
 
-    return 0;
+    void eliminar() {
+        if (vacia()) {
+            std::cout << "\nError: Cola vacía.\n";
+        } else {
+            ++frente;
+        }
+    }
+
+    alumno recuperar() const {
+        if (vacia()) {
+            std::cout << "\nError: Cola vacía.\n";
+            return alumno();
+        }
+        return datos[final];
+    }
+
+    void mostrar() const {
+        if (vacia()) {
+            std::cout << "\nCola vacía.\n";
+        } else {
+            for (int i = frente; i <= final; i++) {
+                std::cout << datos[i] << '\n';
+            }
+        }
+    }
+
+    void buscar(const alumno& emp) const {
+        if (vacia()) {
+            std::cout << "\nCola vacía.\n";
+            return;
+        }
+        for (int i = frente; i <= final; i++) {
+            if (datos[i] == emp) {
+                std::cout << "\nAlumno encontrado:\n" << datos[i] << '\n';
+                return;
+            }
+        }
+        std::cout << "\nNo se encontró ningún alumno.\n";
+    }
+};
+
+std::ostream& operator<<(std::ostream& os, const alumno& emp) {
+    os << "Nombre del alumno: " << emp.nombre << '\n';
+    os << "Nombre de la materia: " << emp.carrera << '\n';
+    os << "Materias aprobadas: " << emp.aprobadas << '\n';
+    os << "Promedio: " << emp.promedio << '\n';
+    return os;
+}
+
+std::istream& operator>>(std::istream& is, alumno& emp) {
+    std::cout << "Introduce el nombre del alumno: ";
+    is >> emp.nombre;
+    std::cout << "Introduce el nombre de la materia: ";
+    is >> emp.carrera;
+    std::cout << "Introduce las materias aprobadas: ";
+    is >> emp.aprobadas;
+    std::cout << "Introduce el promedio: ";
+    is >> emp.promedio;
+    return is;
+}
+
+int main() {
+    ColaEmpleado Micola;
+    alumno emp;
+    int op = 0, num;
+
+    while (op != 6) {
+        std::cout << "\nBienvenido\n"
+                  << "Elige una opción:\n"
+                  << "1: Registrar alumnos\n"
+                  << "2: Mostrar todos los alumnos\n"
+                  << "3: Eliminar el primer alumno\n"
+                  << "4: Mostrar el último alumno\n"
+                  << "5: Buscar alumno\n"
+                  << "6: Salir\n";
+        std::cin >> op;
+
+        switch (op) {
+        case 1:
+            std::cout << "¿Cuántos alumnos quieres registrar? ";
+            std::cin >> num;
+            for (int i = 0; i < num; i++) {
+                std::cout << "\nIntroduce los datos del alumno " << i + 1 << ":\n";
+                std::cin >> emp;
+                Micola.insertar(emp);
+            }
+            break;
+        case 2:
+            std::cout << "\nAlumnos registrados:\n";
+            Micola.mostrar();
+            break;
+        case 3:
+            std::cout << "\nAlumno eliminado.\n";
+            Micola.eliminar();
+            break;
+        case 4:
+            std::cout << "\nÚltimo alumno registrado:\n" << Micola.recuperar();
+            break;
+        case 5:
+            std::cout << "\nIntroduce el alumno a buscar:\n";
+            std::cin >> emp;
+            Micola.buscar(emp);
+            break;
+        case 6:
+            std::cout << "\nGracias.\n";
+            return 0;
+        default:
+            std::cout << "\nOpción inválida.\n";
+            break;
+        }
+    }
 }
